@@ -15,20 +15,20 @@ set( ACVD_VERSION ${ACVD_MAJOR_VERSION}.${ACVD_MINOR_VERSION}.${ACVD_PATCH_VERSI
 set( ACVD_LIB_VERSION ${ACVD_VERSION} )
 set( ACVD_LIB_SOVERSION ${ACVD_MAJOR_VERSION}.${ACVD_MINOR_VERSION} )
 
-# installation
-set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
-set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
-set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
-set(INSTALL_DOC_DIR share/doc/ACVD CACHE PATH "Installation directory for html doc" )
-set(INSTALL_CMAKE_DIR lib/cmake/ACVD CACHE PATH "Installation directory for CMake files" )
+# # installation
+# set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
+# set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+# set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
+# set(INSTALL_DOC_DIR share/doc/ACVD CACHE PATH "Installation directory for html doc" )
+# set(INSTALL_CMAKE_DIR lib/cmake/ACVD CACHE PATH "Installation directory for CMake files" )
 
-# Make relative paths absolute (needed later on)
-foreach(p LIB BIN INCLUDE CMAKE)
-  set(var INSTALL_${p}_DIR)
-  if(NOT IS_ABSOLUTE "${${var}}")
-    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-  endif()
-endforeach()
+# # Make relative paths absolute (needed later on)
+# foreach(p LIB BIN INCLUDE CMAKE)
+#   set(var INSTALL_${p}_DIR)
+#   if(NOT IS_ABSOLUTE "${${var}}")
+#     set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+#   endif()
+# endforeach()
 
 # find_package
 find_package(VTK REQUIRED NO_MODULE)
@@ -41,14 +41,15 @@ endif()
 option(BUILD_SHARED_LIBS "Build vtkSurface with shared libraries." ON)
 option(BUILD_DOCUMENTATION "Build the html documentation with doxygen." OFF)
 
-option(BUILD_DISCRETEREMESHING "Build Discrete Remeshing Tools." ON)
-option(BUILD_VOLUMEPROCESSING "Build Volume tools" ON)
+option(BUILD_DISCRETEREMESHING "Build Discrete Remeshing Tools." OFF)
+option(BUILD_VOLUMEPROCESSING "Build Volume tools" OFF)
 
-option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_EXAMPLES "Build examples" OFF)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single output directory for building all executables.")
-
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single output directory for building all libraries.")
+# set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single output directory for building all executables.")
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Single output directory for building all executables.")
+# set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single output directory for building all libraries.")
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Single output directory for building all libraries.")
 mark_as_advanced(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ACVD.json ${EXECUTABLE_OUTPUT_PATH}/ACVD.json COPYONLY)
@@ -80,55 +81,55 @@ export( TARGETS ${_targets}
   FILE "${ACVD_BINARY_DIR}/ACVDTargets.cmake"
 )
 
-# Export the package for use from the build-tree
-# (this registers the build-tree with a global CMake-registry)
-export(PACKAGE ACVD)
+# # Export the package for use from the build-tree
+# # (this registers the build-tree with a global CMake-registry)
+# export(PACKAGE ACVD)
 
-# -------------------------------------------------------------
-# for the build tree
-set( CONF_INCLUDE_DIRS
-  "${ACVD_SOURCE_DIR}/Common"
-)
+# # -------------------------------------------------------------
+# # for the build tree
+# set( CONF_INCLUDE_DIRS
+#   "${ACVD_SOURCE_DIR}/Common"
+# )
 
-if( BUILD_DISCRETEREMESHING )
-  set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "${ACVD_SOURCE_DIR}/DiscreteRemeshing" )
-endif()
+# if( BUILD_DISCRETEREMESHING )
+#   set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "${ACVD_SOURCE_DIR}/DiscreteRemeshing" )
+# endif()
 
-if( BUILD_VOLUMEPROCESSING )
-  set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "${ACVD_SOURCE_DIR}/VolumeProcessing" )
-endif()
+# if( BUILD_VOLUMEPROCESSING )
+#   set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "${ACVD_SOURCE_DIR}/VolumeProcessing" )
+# endif()
 
-configure_file( ${ACVD_SOURCE_DIR}/ACVDConfig.cmake.in
-  ${ACVD_BINARY_DIR}/ACVDConfig.cmake
-  @ONLY
-)
-# for the install tree
-file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
-   "${INSTALL_INCLUDE_DIR}")
+# configure_file( ${ACVD_SOURCE_DIR}/ACVDConfig.cmake.in
+#   ${ACVD_BINARY_DIR}/ACVDConfig.cmake
+#   @ONLY
+# )
+# # for the install tree
+# file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
+#    "${INSTALL_INCLUDE_DIR}")
 
-set( CONF_INCLUDE_DIRS
-  "\${ACVD_CMAKE_DIR}/${REL_INCLUDE_DIR}/ACVD/Common"
-)
-if( BUILD_DISCRETEREMESHING )
-  set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "\${ACVD_CMAKE_DIR}/${REL_INCLUDE_DIR}/ACVD/DiscreteRemeshing" )
-endif()
+# set( CONF_INCLUDE_DIRS
+#   "\${ACVD_CMAKE_DIR}/${REL_INCLUDE_DIR}/ACVD/Common"
+# )
+# if( BUILD_DISCRETEREMESHING )
+#   set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "\${ACVD_CMAKE_DIR}/${REL_INCLUDE_DIR}/ACVD/DiscreteRemeshing" )
+# endif()
 
-if( BUILD_VOLUMEPROCESSING )
-  set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "\${ACVD_CMAKE_DIR}/${REL_INCLUDE_DIR}/ACVD/VolumeProcessing" )
-endif()
+# if( BUILD_VOLUMEPROCESSING )
+#   set( CONF_INCLUDE_DIRS "${CONF_INCLUDE_DIRS}" "\${ACVD_CMAKE_DIR}/${REL_INCLUDE_DIR}/ACVD/VolumeProcessing" )
+# endif()
 
-configure_file( ${ACVD_SOURCE_DIR}/ACVDConfig.cmake.in
-  ${ACVD_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/ACVDConfig.cmake
-  @ONLY
-)
-configure_file( ${ACVD_SOURCE_DIR}/ACVDConfigVersion.cmake.in
-  ${ACVD_BINARY_DIR}/ACVDConfigVersion.cmake
-  @ONLY
-)
-install( FILES
-    "${ACVD_BINARY_DIR}/ACVDConfig.cmake"
-    "${ACVD_BINARY_DIR}/ACVDConfigVersion.cmake"
-  DESTINATION ${INSTALL_CMAKE_DIR} COMPONENT dev
-)
-install(EXPORT ACVDTargets DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+# configure_file( ${ACVD_SOURCE_DIR}/ACVDConfig.cmake.in
+#   ${ACVD_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/ACVDConfig.cmake
+#   @ONLY
+# )
+# configure_file( ${ACVD_SOURCE_DIR}/ACVDConfigVersion.cmake.in
+#   ${ACVD_BINARY_DIR}/ACVDConfigVersion.cmake
+#   @ONLY
+# )
+# install( FILES
+#     "${ACVD_BINARY_DIR}/ACVDConfig.cmake"
+#     "${ACVD_BINARY_DIR}/ACVDConfigVersion.cmake"
+#   DESTINATION ${INSTALL_CMAKE_DIR} COMPONENT dev
+# )
+# install(EXPORT ACVDTargets DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
 
