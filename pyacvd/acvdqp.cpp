@@ -14,6 +14,9 @@
 #include <vtkTriangle.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
+#include <vtkCellData.h>
+
+#include "vtkIsotropicDiscreteRemeshing.h"
 
 using namespace std;
 using namespace Eigen;

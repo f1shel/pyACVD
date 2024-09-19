@@ -6,13 +6,7 @@
 #include <ctime>
 #include <memory>
 #include <system_error>
-
 #include <sstream>
-#include <vtkPLYWriter.h>
-#include <vtkSTLWriter.h>
-#include <vtkCellData.h>
-
-#include "vtkIsotropicDiscreteRemeshing.h"
 
 std::tuple<
     Eigen::Matrix<float, -1, -1, Eigen::RowMajor>,
